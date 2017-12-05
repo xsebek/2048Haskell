@@ -1,7 +1,9 @@
 {-# LANGUAGE OverloadedStrings #-}
-module Game where
+module HumanGame (humanPlayer, Tick, Name, drawUI, theMap, move, initGame) where
 
 import Logic
+  (Game(..), Direction(..), Grid, printTile, initGame, insertRandomTile,
+  stuckCheck, leftGrid, checkFull, scoreGrid)
 
 import Data.Maybe
 import Data.List
@@ -32,7 +34,6 @@ import qualified Graphics.Vty as V
 import Data.Sequence (Seq)
 import qualified Data.Sequence as S
 import Linear.V2 (V2(..))
-import Lens.Micro ((^.))
 -- marks passing of time
 data Tick = Tick
 
@@ -80,8 +81,8 @@ app = App { appDraw = drawUI
           , appAttrMap = const theMap
           }
 
-main :: IO ()
-main = do
+humanPlayer :: IO ()
+humanPlayer = do
   chan <- newBChan 10
   forkIO $ forever $ do
     writeBChan chan Tick
@@ -90,11 +91,11 @@ main = do
   void $ customMain (V.mkVty V.defaultConfig) (Just chan) app g
 
 isGameOver :: Game -> Bool
-isGameOver g = (checkFull (g ^. grid)) && (stuckCheck (g ^. grid))
+isGameOver g = (checkFull (_grid g)) && (stuckCheck (_grid g))
 
 step :: Game -> Game
 step g =
-  if isGameOver g then Game {_grid = g ^. grid, _score = g ^. score, _done = True}
+  if isGameOver g then Game {_grid = _grid g, _score = _score g, _done = True}
   else g
 
 handle :: Direction -> Grid -> Grid
@@ -110,7 +111,7 @@ move dir g =
         , _score = (scoreGrid newGrid 0)
         , _done = (checkFull newGrid && stuckCheck newGrid)
         }
-  where newGrid = insertRandomTile $ handle dir (g ^. grid)
+  where newGrid = insertRandomTile $ handle dir (_grid g)
 
 handleEvent :: Game -> BrickEvent Name Tick -> EventM Name (Next Game)
 handleEvent g (AppEvent Tick)                       = continue $ step g
@@ -145,7 +146,7 @@ drawInfo = withBorderStyle BS.unicodeBold
 
 drawStats :: Game -> Widget Name
 drawStats g = hLimit 11
-  $ vBox [ drawScore (g ^. score) , padTop (Pad 2) $ drawGameOver (g ^. done)]
+  $ vBox [ drawScore (_score g) , padTop (Pad 2) $ drawGameOver (_done g)]
 
 drawScore :: Int -> Widget Name
 drawScore n = withBorderStyle BS.unicodeBold
@@ -180,5 +181,5 @@ drawGrid g = withBorderStyle BS.unicodeBold
   $ B.borderWithLabel (withAttr magBg $ str "2048")
   $ vBox rows
   where
-    rows = [hBox $ tilesInRow r | r <- (g ^. grid)]
+    rows = [hBox $ tilesInRow r | r <- (_grid g)]
     tilesInRow row = [hLimit 9 $ withBorderStyle BS.unicodeBold $ B.border $ C.hCenter $ padAll 1 $ colorTile $ printTile tile | tile <- row]
