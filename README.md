@@ -1,26 +1,51 @@
 # 2048Haskell
-<img width="652" alt="game" src="https://user-images.githubusercontent.com/11791254/33588803-c51f3310-d942-11e7-9d33-38c06214465c.png">
 
+```haskell
+┏━━Score━━┓    ┏━━━━━━━━━━━━━━━━2048━━━━━━━━━━━━━━━━┓    ┏━━━━━Commands━━━━━┓
+┃         ┃    ┃┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┃    ┃ Left           ← ┃
+┃   256   ┃    ┃┃       ┃┃       ┃┃       ┃┃       ┃┃    ┃ Right          → ┃
+┃         ┃    ┃┃  256  ┃┃   8   ┃┃   4   ┃┃  16   ┃┃    ┃ Down           ↓ ┃
+┗━━━━━━━━━┛    ┃┃       ┃┃       ┃┃       ┃┃       ┃┃    ┃ Restart        r ┃
+               ┃┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┃    ┃ Quit    q or esc ┃
+               ┃┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┃    ┗━━━━━━━━━━━━━━━━━━┛
+ GAME OVER     ┃┃       ┃┃       ┃┃       ┃┃       ┃┃
+               ┃┃   4   ┃┃  64   ┃┃  16   ┃┃   8   ┃┃
+               ┃┃       ┃┃       ┃┃       ┃┃       ┃┃
+               ┃┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┃
+               ┃┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┃
+               ┃┃       ┃┃       ┃┃       ┃┃       ┃┃
+               ┃┃   2   ┃┃  16   ┃┃   8   ┃┃   4   ┃┃
+               ┃┃       ┃┃       ┃┃       ┃┃       ┃┃
+               ┃┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┃
+               ┃┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┏━━━━━━━┓┃
+               ┃┃       ┃┃       ┃┃       ┃┃       ┃┃
+               ┃┃  16   ┃┃   8   ┃┃   4   ┃┃   2   ┃┃
+               ┃┃       ┃┃       ┃┃       ┃┃       ┃┃
+               ┃┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┗━━━━━━━┛┃
+               ┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+```
 
 ## Run:
-```
-stack setup
-stack build
-stack exec 2048Haskell
-```
-In the menu: 
-1. hit enter
-2. press h
-3. hit enter again
-4. now you can play!
 
-At the start of the game you can select a player (either yourself or a bot). Hit enter, and then enter the character representing the player you want.
+```sh
+cabal run 2048Haskell
+```
+
+You will then be greeted by a screen on which you can select the game mode:
+
+```
+┏━━━━━━━━━━━━━━━━━━━━━━━━━━━━Select mode (type key)━━━━━━━━━━━━━━━━━━━━━━━━━━━━┓
+┃ h                                                        Human Player (YOU!) ┃
+┃ m                                                            Monte Carlo Bot ┃
+┗━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━┛
+
+```
 
 ## Rules:
 
-Board made up of 16 tiles. Possible moves: Left, Right, Up, Down
+Board is a 4x4 grid with 16 square tiles. Possible moves: Left <kbd>←</kbd>, Right <kbd>→</kbd>, Up <kbd>↑</kbd>, Down <kbd>↓</kbd>
 
-1. At each time step a new tile that is a random multiple of 2 will be placed in the board.
-2. When you select one of the moves, all tiles will move as far as possible in that direction in the grid.
-3. Tiles of the same value will combine into 1 tile with the value of their sum.
-4. The objective is to get a highest value tile you can. The highest possible value tile to win the game is 2048.
+1. **+2/+4**: At each step a new tile that is a random multiple of 2 will be placed in the board.
+2. **move**: When you select one of the moves, all tiles will move as far as possible in that direction in the grid.
+3. **x+x=2x**: If a tile is moved to a tile of the same value, then they will combine into 1 tile with the value of their sum.
+4. **2048:** The objective is to get a highest tile value. You win by reaching the tile `2048`.
