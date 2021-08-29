@@ -55,7 +55,9 @@ botPlayer2 s = do
     -- writeBChan chan "Up"
     threadDelay 100000 -- decides how fast your game moves
   g <- initGame
-  void $ customMain (V.mkVty V.defaultConfig) (Just chan) app g
+  let mkVty = V.mkVty V.defaultConfig
+  vty <- mkVty
+  void $ customMain vty mkVty (Just chan) app g
 
 
 botEvent :: Game -> BrickEvent Name String -> EventM Name (Next Game)
